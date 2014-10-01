@@ -1,0 +1,12 @@
+﻿<enableJavaScript enable="false" />
+<invoke url="http://${host}:${port}/frontend/" description="Home"/>
+<setInputField name="username" value="demouser" description="Login"/>
+<setInputField name="password" value="demopass" description="Login"/>
+<clickButton label="Login" description="Login"/>
+<verifyText text="Welcome,&amp;nbsp;demo" description="Login"/>
+<storeRandom description="ChooseSpaceport" property="expectedSpaceport" choice="-1,1,25,23,8,15,7,26,9,24,14,20,4,2,3,6,10,17,13,12,5,22,16,19,11,18,21"/>
+<setSelectField description="ChooseSpaceport" name="spaceport" value="#{expectedSpaceport}"/>
+<clickButton label="search" description="Search"/>
+<verifyText text="Availiable space voyages of your choice" description="Search"/>
+<verifyTitle text="List results" description="Search"/>
+<clickLink label="logout" description="Logout"/>

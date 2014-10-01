@@ -1,0 +1,53 @@
+<property name="host.dotnetpay" value="localhost" />
+<property name="port.dotnetpay" value="9082" />
+<enableJavaScript enable="false" />
+<invoke url="http://${host}:${port}/frontend/" description="Home"/>
+<setInputField name="username" value="demouser" description="Login"/>
+<setInputField name="password" value="demopass" description="Login"/>
+<clickButton label="Login" description="Login"/>
+<verifyText text="Welcome,&amp;nbsp;demo" description="Login"/>
+<clickButton label="search" description="Search"/>
+<verifyText text="Availiable space voyages of your choice" description="Search"/>
+<verifyTitle text="List results" description="Search"/>
+<clickLink label="Diamond Star Village" description="Buy"/>
+<verifyText text="OSN-4" description="Buy"/>
+<clickLink label="buy" description="Buy"/>
+<clickLink label="I agree to the GoSpace license terms" description="Agree"/>
+<verifyText text="Thank you for booking your voyage with GoSpace" description="Agree"/>
+<clickLink label="last minute" description="LastMinute"/>
+<sleep seconds="2" description="LastMinute"/>
+<clickLink label="Asatru Accomodation" description="BuyDirectly"/>
+<verifyText text="Resort Name" description="BuyDirectly"/>
+<clickLink label="buy directly" description="BuyDirectly"/>
+<verifyText text="Account Data" description="BuyDirectly"/>
+<clickButton label="confirm" description="BuyDirectly"/>	
+<ifStep>
+	<condition>
+		<verifyText text="Transaction NOT Successful - You do not posses enough money to perform this transaction" description="VerifyEnoughCash"/>
+	</condition>
+	<then>
+		<invoke url="http://${host.dotnetpay}:${port.dotnetpay}/" description="FillUpCash"/>
+		<ifStep description="Check .Net Version">
+			<condition>
+				<verifyInputField htmlId="ctl00_UsernameTextBox" value="" description="Check .Net Version"/>
+			</condition>
+			<then>
+				<property name="ctlprefix" value="ctl0" description=".Net 2.0" />
+			</then>
+			<else>
+				<property name="ctlprefix" value="_ctl" description=".Net 1.1" />
+			</else>
+		</ifStep>
+		<setInputField htmlId="${ctlprefix}0_UsernameTextBox" value="demouser" description="FillUpCash"/>
+		<setInputField htmlId="${ctlprefix}0_PasswordTextBox" value="demopass" description="FillUpCash"/>
+		<clickButton label="Enter" description="FillUpCash"/>
+		<clickButton htmlId="${ctlprefix}2_CashButton" description="FillUpCash"/>
+		<setInputField htmlId="${ctlprefix}6_AmountTextBox" value="100000" description="FillUpCash"/>
+		<enableJavaScript enable="false" description="FillUpCash"/>
+		<clickButton htmlId="${ctlprefix}6_CashButton" description="FillUpCash"/>
+		<enableJavaScript enable="true" description="FillUpCash"/>
+		<clickButton label="Logout" description="LogoutFromDotNetPay"/>
+		<invoke url="http://${host}:${port}/frontend/" description="LogoutFromGoSpace"/>
+	</then>
+</ifStep>
+<clickLink label="logout" description="LogoutFromGoSpace"/>
