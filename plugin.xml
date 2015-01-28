@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+	<extension point="com.dynatrace.diagnostics.pdk.pluginconfig"
+			id="com.dynatrace.diagnostics.plugins.WebTransactionMonitorPlugin"
+			name="Web Transaction Monitor">
+		<information>			
+			<description value="%PLUGIN_CONFIG_DESCRIPTION" />
+			<category value="Remote" />
+			<supportlevel value="supported"/>
+      <license value="compuwareBSD.txt" />
+      <displayname
+            value="%PLUGIN_CONFIG_NAME">
+      </displayname>
+		</information>
+		<configuration>
+			<property label="Script" type="string" multiline="true" key="script" default="" description="Paste your Web Transaction Script here." />
+			<property label="Host" default="" type="host" key="host" description="The host to run the Web Transaction against. Add it as ${host} property to your script." />
+			<property label="Port" default="80" type="long" key="port" description="The port of the host to run the Web Transaction against. Add it as ${port} property to your script." />
+			<property label="Protocol" type="list" key="protocol" default="HTTP/1.1" description="Choose the http protocol version to use for your Web Transactions.">
+				<list>
+					<item value="HTTP/1.1" />
+					<item value="HTTP/1.0" />
+					<item value="HTTP/0.9" />
+				</list>
+			</property>
+			
+			<property label="Log content after errors" default="false" type="boolean" key="logContent" description="Turn on/off content logging when an error occurs. The content of the last web request will be logged when any following step produces an error. Warning: this may cause high disk load on collector!" />
+			<property label="dynaTrace tagging" default="true" type="boolean" key="dtTagging" description="Turn on/off dynaTrace tagging. The timer name for the Web Transaction is taken from Web Transaction step description attributes in your script." />
+			<property label="Transaction name" default="" type="string" key="transactionName" description="The name of this transaction which will be sent in the request header of the Web Transaction's requests if tagging is enabled.">
+                <visibility>
+                    <rule key="dtTagging" value="true" />
+                </visibility>
+			</property>			
+			<property label="Transaction location" default="" type="string" key="transactionLocation" description="The location of this transaction which will be sent in the request header of the Web Transaction's requests if tagging is enabled." >
+                <visibility>
+                    <rule key="dtTagging" value="true" />
+                </visibility>
+			</property>			
+			<property label="Custom headers" type="string" multiline="true" key="customHeaders" default="" description="Enter your custom headers for the webrequests using &lt;headername&gt;=&lt;headervalue&gt;. One entry per line." />
+			<property label="User-Agent" default="dynaTrace/4" type="list" key="userAgent" description="The user agent string identifies the HTTP client and is sent with every request.">
+				<list>
+					<item value="dynaTrace/4" />
+					<item value="Mozilla/5.0 (X11; U; Linux x86_64; rv:1.9.0.1) Gecko/2008071222 Firefox/3.0.1" />
+					<item value="Mozilla/5.0 (Windows; U; Windows NT 6.0) AppleWebKit/525.19 (KHTML, like Gecko) Version/3.1.2 Safari/525.21" />
+					<item value="Mozilla/5.0 (Windows; U; MSIE 7.0; Windows NT 6.0)" />
+					<item value="other..." />
+				</list>
+			</property>
+			<property label="Alternate User-Agent" default="" type="string" key="alternateUserAgent" description="Specify an alternate user agent string.">
+				<visibility>
+					<rule key="userAgent" value="other..."/>
+				</visibility>
+			</property>
+			<property label="User-Agent Language" default="en" type="string" key="userAgentLanguage" description="The user agent language string identifies the language used by the HTTP client and is sent with every request." />
+			
+			<property label="Use HTTP Proxy" type="boolean" key="useProxy" default="false" description="Choose if you want to use a proxy server for your Web Transactions." />
+			<property label="HTTP Proxy host" type="string" key="httpProxyHost" default="localhost" description="The hostname of the HTTP proxy server.">
+				<visibility>
+					<rule key="useProxy" value="true" />
+				</visibility>
+			</property>
+			<property label="HTTP Proxy port" type="long" key="httpProxyPort" default="80" description="The port of the HTTP proxy server.">
+				<visibility>
+					<rule key="useProxy" value="true" />
+				</visibility>
+			</property>
+			<property label="HTTP Proxy authorization" type="boolean" key="httpProxyAuth" default="false" description="If the HTTP proxy server requires a name and a password for access, proxy authorization needs to be enabled.">
+				<visibility>
+					<rule key="useProxy" value="true" />
+				</visibility>
+			</property>
+			<property label="HTTP Proxy username" type="string" key="httpProxyUsername" default="" description="The user name that is used for authorization with the HTTP proxy server.">
+				<visibility>
+					<rule key="httpProxyAuth" value="true" />
+				</visibility>
+			</property>
+			<property label="HTTP Proxy password" type="password" key="httpProxyPassword" default="" description="The password for the proxy user name.">
+				<visibility>
+					<rule key="httpProxyAuth" value="true" />
+				</visibility>
+			</property>
+
+			<property label="Connection timeout [s]" default="60" type="long" key="connectionTimeout" description="The maximum number of seconds that the Web Transaction Monitor should wait until the server accepts the connection and time to wait for response before socket timeout."/>
+			<property label="Auto refresh" default="true" type="boolean" key="autoRefresh" description="Specifies if the client should automatically follow page refresh requests (html: &lt;meta http-equiv=&quot;refresh&quot; ...&gt;)." />
+
+			<property label="Log level" default="OFF" type="list" key="loglevel" description="Specify the Web Transaction Monitor's log4j log level.">
+				<list>
+					<item value="OFF" />
+					<item value="SEVERE" />
+					<item value="WARNING" />
+					<item value="INFO" />
+					<item value="FINE" />
+					<item value="FINER" />
+					<item value="FINEST" />
+					<item value="ALL" />
+				</list>
+			</property>
+		</configuration>           		 
+	</extension>
+	
+	<extension point="com.dynatrace.diagnostics.pdk.monitor"
+			id="com.dynatrace.diagnostics.plugins.WebTransactionMonitor"
+      		name="Web Transaction Monitor">
+		<plugin class="wt.WTMonitor" configid="com.dynatrace.diagnostics.plugins.WebTransactionMonitorPlugin" />
+  <information>
+     <displayname
+           value="%MONITOR_NAME">
+     </displayname>
+  </information>
+	</extension>
+
+	<extension point="com.dynatrace.diagnostics.pdk.monitormetricgroup"
+			id="com.dynatrace.diagnostics.plugins.WebTransactionMonitorMetricGroup"
+			name="Web Transaction Monitor">
+		<metricgroup
+        displayname="%METRICGROUP_WEB_TRANSACTION_MONITOR"
+        monitorid="com.dynatrace.diagnostics.plugins.WebTransactionMonitor">
+			<metric
+         defaultrate="none"
+         description="%METRIC_TRANSACTION_DURATION_DESCRIPTION"
+         displayname="%METRIC_TRANSACTION_DURATION_LABEL"
+         hidedisplayaggregation="sum count"
+         name="TransactionDuration"
+         unit="ms"/>
+			<metric
+         defaultrate="none"
+         description="%METRIC_TRANSACTION_SUCCESSFUL_DESCRIPTION"
+         displayname="%METRIC_TRANSACTION_SUCCESSFUL_LABEL"
+         hidedisplayaggregation="sum count"
+         name="TransactionSuccessful"
+         unit="number"/>
+			<metric
+         defaultrate="none"
+         description="%METRIC_AGGREGATED_ROUND_TRIP_TIME_DESCRIPTION"
+         displayname="%METRIC_AGGREGATED_ROUND_TRIP_TIME_LABEL"
+         hidedisplayaggregation="sum count"
+         name="AggregatedRoundTripTime"
+         unit="ms"/>
+			<metric
+         defaultrate="none"
+         description="%METRIC_TRANSACTION_BYTES_SENT_DESCRIPTION"
+         displayname="%METRIC_TRANSACTION_BYTES_SENT_LABEL"
+         name="TransactionBytesSent"
+         unit="bytes"/>
+			<metric
+         defaultrate="none"
+         description="%METRIC_TRANSACTION_BYTES_RECEIVED_DESCRIPTION"
+         displayname="%METRIC_TRANSACTION_BYTES_RECEIVED_LABEL"
+         name="TransactionBytesReceived"
+         unit="bytes"/>
+			<metric
+         defaultrate="none"
+         description="%METRIC_NUMBER_OF_REQUESTS_DESCRIPTION"
+         displayname="%METRIC_NUMBER_OF_REQUESTS_LABEL"
+         name="NumberOfRequests"
+         unit="number"/>
+		</metricgroup>       	
+		<!-- Additional uuids:
+		f23f2d22-5254-11dd-ae16-0800200c9a66
+		f23f2d28-5254-11dd-ae16-0800200c9a66
+		f23f2d29-5254-11dd-ae16-0800200c9a66
+		f23f2d30-5254-11dd-ae16-0800200c9a66
+		f23f2d31-5254-11dd-ae16-0800200c9a66
+		-->
+		<information>
+         <description value="%METRICGROUP_WEB_TRANSACTION_MONITOR_DESCRIPTION"/>          
+	    </information>
+
+	</extension>
+</plugin>
