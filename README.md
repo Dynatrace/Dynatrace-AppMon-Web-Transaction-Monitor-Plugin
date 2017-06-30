@@ -1,4 +1,4 @@
-##Web Transaction Monitor Plugin
+## Web Transaction Monitor Plugin
 
 Allows you to execute a multi step web transaction script to be used to e.g: verify availability or functionality of critical web transactions.
 
